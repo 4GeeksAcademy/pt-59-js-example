@@ -78,18 +78,21 @@ const solveHanoi = (left, mid, right) => {
   } else {
     l.unshift(m.shift());
   }
+  displayHTML("Iteration:", renderHanoi(left, mid, right));
   // Move from left to right or vice versa (depending on legality)
   if (r[0] === undefined || l[0] < r[0]) {
     r.unshift(l.shift());
   } else {
     l.unshift(r.shift());
   }
+  displayHTML("Iteration:", renderHanoi(left, mid, right));
   // Move from mid to right or vice versa (depending on legality)
   if (r[0] === undefined || m[0] < r[0]) {
     r.unshift(m.shift());
   } else {
     m.unshift(r.shift());
   }
+  displayHTML("Iteration:", renderHanoi(left, mid, right));
 
   return [l, m, r];
 };
@@ -187,7 +190,7 @@ const books = [
 ];
 
 window.onload = () => {
-  let left = [1, 2, 3, 4, 5, 6, 7, 8];
+  let left = [1, 2, 3, 4];
   let mid = [];
   let right = [];
 
@@ -198,7 +201,6 @@ window.onload = () => {
 
   while (right.length < total) {
     [left, mid, right] = solveHanoi(left, mid, right);
-    displayHTML("Iteration:", renderHanoi(left, mid, right));
   }
 
   // Fibonacci Numbers:
