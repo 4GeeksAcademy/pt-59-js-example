@@ -5,6 +5,95 @@ import "./style.css";
 import "./assets/img/rigo-baby.jpg";
 import "./assets/img/4geeks.ico";
 
+// const someConstant = "This is immutable";
+// // someConstant = "This means I can't change it."; // This line will throw an error if uncommented.  Try it!
+
+// let someVariable = "This is mutable";
+// console.log(someVariable);
+// someVariable =
+//   "This means it is capable of change, unlike that vending machine.";
+// console.log(someVariable);
+
+// Data Types:
+// ("strings");
+// 42 * 3.1415; // numbers
+// true; // booleans
+// []; // arrays
+// let someObj = {
+//   color: "blue",
+//   units: "mm",
+//   sizes: [1.5, 2, 2.5, 3, 4, 5, 6],
+// }; // objects
+// null; // nullish values.
+// undefined; // nullish values.
+
+// Bare minimum function:
+const fib_basic = (n) => {
+  // 0, 1, 2, 3, 4, 5, 6,  7,  8
+  // 1, 1, 2, 3, 5, 8, 13, 21, 34
+
+  if (n <= 1) {
+    return 1;
+  }
+
+  let fib_numbers = [1, 1];
+  for (let i = 1; i < n; i++) {
+    // fib_numbers[n] + fib_numbers[n - 1] --> fib_numbers
+    let new_number = fib_numbers[i] + fib_numbers[i - 1];
+    fib_numbers.push(new_number);
+  }
+  return fib_numbers.pop();
+};
+
+const renderHanoi = (left, mid, right) => {
+  return `
+    <div class="row">
+      <div class="col col-4 d-flex flex-column justify-content-end align-items-center gap-1">
+        <h2>Left</h2>
+        ${left
+          .map((ring) => "<div class='placeholder col-" + ring + "'></div>")
+          .join("")}</div>
+      <div class="col col-4 d-flex flex-column justify-content-end align-items-center gap-1">
+          <h2>Mid</h2>
+        ${mid
+          .map((ring) => "<div class='placeholder col-" + ring + "'></div>")
+          .join("")}</div>
+      <div class="col col-4 d-flex flex-column justify-content-end align-items-center gap-1">
+          <h2>Right</h2>
+        ${right
+          .map((ring) => "<div class='placeholder col-" + ring + "'></div>")
+          .join("")}</div>
+    </div>
+  `;
+};
+
+const solveHanoi = (left, mid, right) => {
+  let l = left;
+  let m = mid;
+  let r = right;
+
+  // Move from left to mid or vice versa (depending on legality)
+  if (m[0] === undefined || l[0] < m[0]) {
+    m.unshift(l.shift());
+  } else {
+    l.unshift(m.shift());
+  }
+  // Move from left to right or vice versa (depending on legality)
+  if (r[0] === undefined || l[0] < r[0]) {
+    r.unshift(l.shift());
+  } else {
+    l.unshift(r.shift());
+  }
+  // Move from mid to right or vice versa (depending on legality)
+  if (r[0] === undefined || m[0] < r[0]) {
+    r.unshift(m.shift());
+  } else {
+    m.unshift(r.shift());
+  }
+
+  return [l, m, r];
+};
+
 // The "safe" way to declare a function:
 const debugText = (label, item) => {
   const target = document.querySelector("#target");
@@ -14,6 +103,15 @@ const debugText = (label, item) => {
     <code>${JSON.stringify(item)}</code>
     <hr />
   ` + target.innerHTML;
+};
+
+const displayHTML = (label, item) => {
+  const target = document.querySelector("#target");
+  target.innerHTML += `
+    <h3>${label}</h3>
+    <div>${item}</div>
+    <hr />
+  `;
 };
 
 // The other way to declare a function:
@@ -89,6 +187,23 @@ const books = [
 ];
 
 window.onload = () => {
+  let left = [1, 2, 3, 4, 5, 6, 7, 8];
+  let mid = [];
+  let right = [];
+
+  const total = left.length;
+
+  // Tower of Hanoi
+  displayHTML("Initial Tower", renderHanoi(left, mid, right));
+
+  while (right.length < total) {
+    [left, mid, right] = solveHanoi(left, mid, right);
+    displayHTML("Iteration:", renderHanoi(left, mid, right));
+  }
+
+  // Fibonacci Numbers:
+  // debugText("Fib #2", fib_basic(2));
+  // debugText("Fib #10", fib_basic(10));
   // Uncomment the code you want to check out:
   // for (let i = 0; i < 10; i++) {
   //   debugText("ID:", gen.next().value);
