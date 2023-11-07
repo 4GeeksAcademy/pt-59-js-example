@@ -45,57 +45,73 @@ const fib_basic = (n) => {
   return fib_numbers.pop();
 };
 
-const renderHanoi = (left, mid, right) => {
-  return `
-    <div class="row">
-      <div class="col col-4 d-flex flex-column justify-content-end align-items-center gap-1">
+const renderHanoi = (left, mid, right, total) => {
+  const renderTower = (arr) => {
+    console.log(arr, total);
+    return arr
+      .map((ring) => {
+        return `
+      <div class="progress" role="progressbar">
+        <div class="progress-bar" style="width: ${Math.floor(
+          (ring / total) * 100
+        )}%"></div>
+      </div>`;
+      })
+      .join("");
+  };
+
+  return `<div class="row">
+      <div class="col col-4 d-flex flex-column justify-content-end align-items-stretch gap-1">
         <h2>Left</h2>
-        ${left
-          .map((ring) => "<div class='placeholder col-" + ring + "'></div>")
-          .join("")}</div>
-      <div class="col col-4 d-flex flex-column justify-content-end align-items-center gap-1">
+        ${renderTower(left)}</div>
+      <div class="col col-4 d-flex flex-column justify-content-end align-items-stretch gap-1">
           <h2>Mid</h2>
-        ${mid
-          .map((ring) => "<div class='placeholder col-" + ring + "'></div>")
-          .join("")}</div>
-      <div class="col col-4 d-flex flex-column justify-content-end align-items-center gap-1">
+        ${renderTower(mid)}</div>
+      <div class="col col-4 d-flex flex-column justify-content-end align-items-stretch gap-1">
           <h2>Right</h2>
-        ${right
-          .map((ring) => "<div class='placeholder col-" + ring + "'></div>")
-          .join("")}</div>
-    </div>
-  `;
+        ${renderTower(right)}</div>
+    </div>`;
 };
 
-const solveHanoi = (left, mid, right) => {
-  let l = left;
-  let m = mid;
-  let r = right;
+function* solveHanoi(totalDiscs) {
+  let stepNumber = 0;
 
-  // Move from left to mid or vice versa (depending on legality)
-  if (m[0] === undefined || l[0] < m[0]) {
-    m.unshift(l.shift());
-  } else {
-    l.unshift(m.shift());
-  }
-  displayHTML("Iteration:", renderHanoi(left, mid, right));
-  // Move from left to right or vice versa (depending on legality)
-  if (r[0] === undefined || l[0] < r[0]) {
-    r.unshift(l.shift());
-  } else {
-    l.unshift(r.shift());
-  }
-  displayHTML("Iteration:", renderHanoi(left, mid, right));
-  // Move from mid to right or vice versa (depending on legality)
-  if (r[0] === undefined || m[0] < r[0]) {
-    r.unshift(m.shift());
-  } else {
-    m.unshift(r.shift());
-  }
-  displayHTML("Iteration:", renderHanoi(left, mid, right));
+  let left = new Array(totalDiscs).fill().map((_x, idx) => idx + 1);
+  let mid = [];
+  let right = [];
 
-  return [l, m, r];
-};
+  while (right.filter((x) => x).length < totalDiscs) {
+    // Move from left to mid or vice versa (depending on legality)
+    if (mid[0] === undefined || mid[0] >= left[0]) {
+      mid.unshift(left.shift());
+    } else {
+      left.unshift(mid.shift());
+    }
+    displayHTML("Iteration:", renderHanoi(left, mid, right, totalDiscs));
+
+    yield stepNumber++;
+
+    // Move from left to right or vice versa (depending on legality)
+    if (right[0] === undefined || right[0] >= left[0]) {
+      right.unshift(left.shift());
+    } else {
+      left.unshift(right.shift());
+    }
+    displayHTML("Iteration:", renderHanoi(left, mid, right, totalDiscs));
+
+    yield stepNumber++;
+
+    // Move from mid to right or vice versa (depending on legality)
+    if (right[0] === undefined || right[0] >= mid[0]) {
+      right.unshift(mid.shift());
+    } else {
+      mid.unshift(right.shift());
+    }
+    displayHTML("Iteration:", renderHanoi(left, mid, right, totalDiscs));
+
+    yield stepNumber++;
+  }
+}
 
 // The "safe" way to declare a function:
 const debugText = (label, item) => {
@@ -116,26 +132,6 @@ const displayHTML = (label, item) => {
     <hr />
   `;
 };
-
-// The other way to declare a function:
-function someFunc(a, b) {
-  return a * b;
-}
-
-function* idMaker() {
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
-  let index = 0;
-  while (true) {
-    yield index++;
-  }
-}
-
-const gen = idMaker();
-
-/*
- * We're setting window.onload to an
- * anonymous function.
- */
 
 const books = [
   {
@@ -190,17 +186,12 @@ const books = [
 ];
 
 window.onload = () => {
-  let left = [1, 2, 3, 4];
-  let mid = [];
-  let right = [];
+  let totalRings = 4;
 
-  const total = left.length;
+  const hanoiSolver = solveHanoi(totalRings);
 
-  // Tower of Hanoi
-  displayHTML("Initial Tower", renderHanoi(left, mid, right));
-
-  while (right.length < total) {
-    [left, mid, right] = solveHanoi(left, mid, right);
+  for (let step of hanoiSolver) {
+    console.log(step);
   }
 
   // Fibonacci Numbers:
