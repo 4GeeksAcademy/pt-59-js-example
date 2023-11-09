@@ -185,15 +185,94 @@ const books = [
   },
 ];
 
+const pets = [
+  {
+    name: "Sombra",
+    petType: "cat",
+    breed: "domestic shorthair",
+    color: "black",
+    age: 1,
+    ownerName: "Shane",
+    weight: 7.5,
+    adorability: 11,
+  },
+  {
+    name: "Grizelle",
+    petType: "cat",
+    breed: "maine coon",
+    color: "brown",
+    age: 5,
+    ownerName: "Shane",
+    weight: null,
+    adorability: 11,
+  },
+  {
+    name: "Kirby",
+    petType: "dog",
+    breed: "dachsund mix",
+    color: "brown",
+    age: 4,
+    ownerName: "Valerie",
+    weight: 22,
+    adorability: 11,
+  },
+  {
+    name: "Mochi",
+    petType: "rabbit",
+    breed: "lionhead",
+    color: "brown",
+    age: 1,
+    ownerName: "Albert",
+    weight: null,
+    adorability: 11,
+  },
+];
+
+const renderPet = (pet) => {
+  return `
+    <div class="row">
+      <div class="col col-6 offset-3">
+        <div class="card mb-3">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img src="https://placehold.co/180x250?text=${
+                pet.name
+              }" class="img-fluid rounded-start" alt="...">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">${pet.name}</h5>
+                <p class="card-text">
+                  ${pet.name} is an adorable ${pet.color} ${pet.breed} 
+                  ${pet.petType}, coming in at a respectable 
+                  ${pet.adorability}/10 adorability score.
+                </p>
+                <p class="card-text">
+                  When asked about their weight, ${pet.name} responded with "${
+    pet.weight ? pet.weight + " lbs." : "It is awfully rude to ask."
+  }"
+                </p>
+                <p class="card-text">
+                  ${pet.name} is in the care of ${pet.ownerName}, and 
+                  ${pet.name} is ${pet.age} years old.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+};
+
 window.onload = () => {
-  let totalRings = 4;
+  const target = document.querySelector("#target");
+  target.innerHTML = pets.map((pet) => renderPet(pet)).join("");
 
-  const hanoiSolver = solveHanoi(totalRings);
-
-  for (let step of hanoiSolver) {
-    console.log(step);
-  }
-
+  // let totalRings = 4;
+  // const hanoiSolver = solveHanoi(totalRings);
+  // for (let step of hanoiSolver) {
+  //   console.log(step);
+  // }
   // Fibonacci Numbers:
   // debugText("Fib #2", fib_basic(2));
   // debugText("Fib #10", fib_basic(10));
